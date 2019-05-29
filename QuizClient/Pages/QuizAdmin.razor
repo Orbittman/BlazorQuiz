@@ -1,0 +1,34 @@
+﻿@page "/quizes"
+@inject IClient client
+@using Models.Api
+
+<h1>Admin</h1>
+
+@if (quizes == null)
+{
+    <p><em>Loading ...</em></p>
+    @if(something.Count() > 0)
+    {
+        <span>@something[0].Length</span>
+    }
+}
+else
+{
+    <uk>
+        @foreach (var quiz in quizes)
+        {
+            <li><a href="@($"/quiz/{quiz.Id}")">@quiz.Name</a></li>
+        }
+    </uk>
+}
+
+@functions {
+    QuizDto[] quizes;
+    List<QuizDto[]> something = new List<QuizDto[]>();
+
+    protected override async Task OnInitAsync()
+    {
+        quizes = await client.GetAsync<QuizDto[]>("api/quiz");
+        something.Add(quizes);
+    }
+}

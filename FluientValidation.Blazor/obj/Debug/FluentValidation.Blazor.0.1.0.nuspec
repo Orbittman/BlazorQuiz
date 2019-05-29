@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>FluentValidation.Blazor</id>
+    <version>0.1.0</version>
+    <authors>FluentValidation.Blazor</authors>
+    <owners>FluentValidation.Blazor</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://github.com/Orbittman/FluentValidation.Blazor</projectUrl>
+    <description>Package Description</description>
+    <tags>Blazor FluentValidation Validation</tags>
+    <repository url="https://github.com/Orbittman/FluentValidation.Blazor" />
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="FluentValidation" version="8.5.0-preview1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.AspNetCore.Blazor" version="3.0.0-preview5-19227-01" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Users\Tim\source\repos\BlazorQuiz\FluientValidation.Blazor\bin\Debug\netstandard2.0\FluentValidation.Blazor.dll" target="lib\netstandard2.0\FluentValidation.Blazor.dll" />
+  </files>
+</package>

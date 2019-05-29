@@ -1,0 +1,9 @@
+C:\Users\Tim\source\repos\BlazorQuiz\FluientValidation.Blazor\bin\Debug\netstandard2.0\FluentValidation.Blazor.deps.json
+C:\Users\Tim\source\repos\BlazorQuiz\FluientValidation.Blazor\bin\Debug\netstandard2.0\FluentValidation.Blazor.dll
+C:\Users\Tim\source\repos\BlazorQuiz\FluientValidation.Blazor\bin\Debug\netstandard2.0\FluentValidation.Blazor.pdb
+C:\Users\Tim\source\repos\BlazorQuiz\FluientValidation.Blazor\obj\Debug\netstandard2.0\FluentValidation.Blazor.csproj.CoreCompileInputs.cache
+C:\Users\Tim\source\repos\BlazorQuiz\FluientValidation.Blazor\obj\Debug\netstandard2.0\FluentValidation.Blazor.AssemblyInfoInputs.cache
+C:\Users\Tim\source\repos\BlazorQuiz\FluientValidation.Blazor\obj\Debug\netstandard2.0\FluentValidation.Blazor.AssemblyInfo.cs
+C:\Users\Tim\source\repos\BlazorQuiz\FluientValidation.Blazor\obj\Debug\netstandard2.0\FluentValidation.Blazor.dll
+C:\Users\Tim\source\repos\BlazorQuiz\FluientValidation.Blazor\obj\Debug\netstandard2.0\FluentValidation.Blazor.pdb
+C:\Users\Tim\source\repos\BlazorQuiz\FluientValidation.Blazor\obj\Debug\netstandard2.0\FluentValidation.Blazor.csprojAssemblyReference.cache
