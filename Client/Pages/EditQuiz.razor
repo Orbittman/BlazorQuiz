@@ -1,0 +1,29 @@
+﻿@using Models.Api
+
+<InputText bind-Value="@Quiz.Name" />
+<ValidationMessage For="@(() => Quiz.Name)" />
+<input type="button" class="btn btn-primary" onclick="@AddQuestion" value="Add question" />
+<ValidationMessage For="@(() => Quiz.Questions)" />
+@if (Quiz != null)
+{
+    @foreach (var question in Quiz.Questions)
+        {
+            <div><EditQuestion RemoveQuestion="@RemoveQuestion" Question="@question" /></div>
+        }
+}
+
+@functions {
+    [Parameter]
+    private QuizDto Quiz { get; set; }
+
+    void AddQuestion()
+    {
+        Quiz.Questions.Add(new QuestionDto { });
+    }
+
+    public void RemoveQuestion(QuestionDto question)
+    {
+        Quiz.Questions.Remove(question);
+        base.StateHasChanged();
+    }
+}
