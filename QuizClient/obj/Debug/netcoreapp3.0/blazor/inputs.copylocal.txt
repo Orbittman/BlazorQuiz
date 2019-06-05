@@ -1,4 +1,0 @@
-C:\Users\Tim\.nuget\packages\microsoft.aspnetcore.blazor\3.0.0-preview4-19216-03\lib\netstandard2.0\Microsoft.AspNetCore.Blazor.dll
-C:\Users\Tim\.nuget\packages\mono.webassembly.interop\3.0.0-preview4.19216.2\lib\netstandard2.0\Mono.WebAssembly.Interop.dll
-C:\Users\Tim\.nuget\packages\newtonsoft.json\12.0.2\lib\netstandard2.0\Newtonsoft.Json.dll
-C:\Users\Tim\source\repos\BlazorQuiz\Models\bin\Debug\netstandard2.1\Models.dll

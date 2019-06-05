@@ -1,9 +1,0 @@
-C:\Users\Tim\source\repos\BlazorQuiz\Models\bin\Debug\netstandard2.0\Models.deps.json
-C:\Users\Tim\source\repos\BlazorQuiz\Models\bin\Debug\netstandard2.0\Models.dll
-C:\Users\Tim\source\repos\BlazorQuiz\Models\bin\Debug\netstandard2.0\Models.pdb
-C:\Users\Tim\source\repos\BlazorQuiz\Models\obj\Debug\netstandard2.0\Models.csprojAssemblyReference.cache
-C:\Users\Tim\source\repos\BlazorQuiz\Models\obj\Debug\netstandard2.0\Models.csproj.CoreCompileInputs.cache
-C:\Users\Tim\source\repos\BlazorQuiz\Models\obj\Debug\netstandard2.0\Models.AssemblyInfoInputs.cache
-C:\Users\Tim\source\repos\BlazorQuiz\Models\obj\Debug\netstandard2.0\Models.AssemblyInfo.cs
-C:\Users\Tim\source\repos\BlazorQuiz\Models\obj\Debug\netstandard2.0\Models.dll
-C:\Users\Tim\source\repos\BlazorQuiz\Models\obj\Debug\netstandard2.0\Models.pdb
