@@ -2,21 +2,21 @@
 
 <InputText bind-Value="@Quiz.Name" />
 <ValidationMessage For="@(() => Quiz.Name)" />
-<input type="button" class="btn btn-primary" onclick="@AddQuestion" value="Add question" />
+<input type="button" class="btn btn-primary" @onclick="@AddQuestion" value="Add question" />
 <ValidationMessage For="@(() => Quiz.Questions)" />
 @if (Quiz != null)
 {
     @foreach (var question in Quiz.Questions)
-        {
-            <div><EditQuestion RemoveQuestion="@RemoveQuestion" Question="@question" /></div>
-        }
+    {
+        <div><EditQuestion RemoveQuestion="@RemoveQuestion" Question="@question" /></div>
+    }
 }
 
-@functions {
+@code {
     [Parameter]
-    private QuizDto Quiz { get; set; }
+    public QuizDto Quiz { get; set; }
 
-    void AddQuestion()
+    public void AddQuestion()
     {
         Quiz.Questions.Add(new QuestionDto { });
     }

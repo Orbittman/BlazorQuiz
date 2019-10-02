@@ -7,5 +7,7 @@
         public Question Question { get; set; }
 
         public Option Option { get; set; }
+
+        public QuizResponse Response { get; set; }
     }
 }

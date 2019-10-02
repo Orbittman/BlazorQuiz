@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{71406C2A-EC73-4598-B781-1A5DEF3D50F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentValidation.Blazor", "FluientValidation.Blazor\FluentValidation.Blazor.csproj", "{D717F937-42BE-4E9A-ABFC-F012C833D574}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentValidation.Blazor", "FluientValidation.Blazor\FluentValidation.Blazor.csproj", "{D717F937-42BE-4E9A-ABFC-F012C833D574}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -20,13 +20,14 @@ else
         <ul>
             @foreach (var quiz in quizes)
             {
-                <li><a onclick="@(() => ToggleQuizFields(quiz))">@quiz.Name</a></li>
+                <li><a @onclick="@(() => ToggleQuizFields(quiz))">@quiz.Name</a></li>
             }
         </ul>
     }
+     
     <EditForm OnValidSubmit="@HandleSubmit" Model="@newQuiz">
         <FluentValidationValidator />
-        <button class="btn btn-primary" onclick="@(() => ToggleQuizFields())">Add quiz</button>
+        <button class="btn btn-primary" @onclick="@(() => ToggleQuizFields())">Add quiz</button>
 
         <div hidden="@(!showAddQuiz)">
             <EditQuiz quiz="@newQuiz" />
@@ -35,22 +36,22 @@ else
     </EditForm>
 }
 
-@functions {
+@code {
     IList<QuizDto> quizes;
+
     private bool showAddQuiz { get; set; } = false;
 
     public QuizDto newQuiz { get; set; } = new QuizDto { Questions = new List<QuestionDto>() };
 
-    protected override async Task OnInitAsync()
+    protected override async Task OnInitializedAsync()
     {
         await GetQuizData();
-        Console.WriteLine("Initialised");
+        Console.WriteLine(State.GlobalState.IpAddress);
     }
 
     async Task<IList<QuizDto>> GetQuizData()
     {
         quizes = await client.GetAsync<List<QuizDto>>("api/quiz");
-        Console.WriteLine(quizes[0].Questions.Count);
         return quizes;
     }
 

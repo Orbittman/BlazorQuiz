@@ -12,11 +12,13 @@
             CreateMap<Quiz, QuizDto>();
             CreateMap<Option, OptionDto>();
             CreateMap<Answer, AnswerDto>();
+            CreateMap<QuizResponse, QuizResponseDto>();
 
             CreateMap<QuizDto, Quiz>();
             CreateMap<QuestionDto, Question>();
             CreateMap<OptionDto, Option>();
             CreateMap<AnswerDto, Answer>();
+            CreateMap<QuizResponseDto, QuizResponse>();
         }
     }
 }

@@ -1,0 +1,68 @@
+﻿@page "/takequiz"
+@inject Client.IApiClient client
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+
+@using Models.Api
+
+@if (response == null)
+{
+    <div>Loading</div>
+}
+else
+{
+    <span>@response.Quiz.Name</span>
+    <EditForm OnValidSubmit="@HandleSubmit" Model="@response">
+        <div>
+            <label for="name">Enter your name</label>
+            <input type="text" bind="name" id="name" />
+        </div>
+        @if (!string.IsNullOrWhiteSpace(name) && response != null)
+        {
+            <ol>
+                @foreach (var question in response.Quiz.Questions)
+                {
+                    <li>
+                        @question.Text :
+                        <div>
+                            <ul>
+                                @foreach (var option in question.Options)
+                                {
+                                    <li>
+                                        <input type="radio" value="@(option.Text)" name="question@(question.Id)">
+                                        <label for="question@(question.Id)">@option.Text</label>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </li>
+                }
+            </ol>
+            <input type="submit" class="btn btn-success" value="Submit" />
+        }
+    </EditForm>
+}
+
+@functions{
+        string name;
+        QuizResponseDto response;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // get the IP address of the requesting machine
+        if (int.TryParse(ParseQueryParameter("quiz"), out var quizId))
+        {
+            response = await client.GetAsync<QuizResponseDto>($"api/quiz/responses/{quizId}");
+        }
+    }
+
+    private string ParseQueryParameter(string name)
+    {
+        var uri = new Uri(UriHelper.BaseUri);
+        return Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue(name, out var type) ? type.First() : "";
+    }
+
+    async Task<bool> HandleSubmit()
+    {
+        return true;
+    }
+}

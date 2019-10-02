@@ -38,7 +38,7 @@ namespace Infrastructure
                 var validationResult = validator.Validate(context);
 
                 messages.Clear(fieldIdentifier);
-                messages.AddRange(fieldIdentifier, validationResult.Errors.Select(error => error.ErrorMessage));
+                messages.Add(fieldIdentifier, validationResult.Errors.Select(error => error.ErrorMessage));
 
                 editContext.NotifyValidationStateChanged();
             }

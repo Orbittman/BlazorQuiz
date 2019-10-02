@@ -1,8 +1,10 @@
+using Client.Extensions;
 using FluentValidation;
 using Infrastructure;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Models.Validation;
+using System;
 
 namespace Client
 {
@@ -19,6 +21,7 @@ namespace Client
         public void Configure(IComponentsApplicationBuilder app)
         {
             app.AddComponent<App>("app");
+            app.Initialise();
         }
     }
 }

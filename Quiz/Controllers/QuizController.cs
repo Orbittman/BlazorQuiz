@@ -6,6 +6,10 @@ namespace Quiz.Controllers
     using Microsoft.EntityFrameworkCore;
     using Models.Api;
     using AutoMapper;
+    using System;
+    using Quiz.Extensions;
+    using Microsoft.AspNetCore.Http;
+    using System.Threading.Tasks;
 
     [Route("api/[controller]")]
     [ApiController]
@@ -13,30 +17,50 @@ namespace Quiz.Controllers
     {
         private readonly IQuizContext context;
         private readonly IMapper mapper;
+        private readonly IHttpContextAccessor accessor;
 
-        public QuizController(IQuizContext context, IMapper mapper)
+        public QuizController(IQuizContext context, IMapper mapper, IHttpContextAccessor accessor)
         {
             this.context = context;
             this.mapper = mapper;
+            this.accessor = accessor;
         }
 
         [HttpGet]
-        public ActionResult<QuizDto[]> Quizes()
+        public ActionResult<QuizDto[]> GetQuizes()
         {
             var quizes = context.Quizes.Include(q => q.Questions).ThenInclude(q => q.Options).ToArray();
             return mapper.Map<QuizDto[]>(quizes);
         }
 
-        [HttpGet("{id:int}")]
-        public ActionResult<QuizDto> Get(int id)
+        [HttpGet("responses/{id:int}")]
+        public async Task<ActionResult<QuizResponseDto>> GetQuiz(int id)
         {
-            var quiz = context.Quizes.SingleOrDefault(q => q.Id == id);
-            if (quiz != null)
-            {
-                return mapper.Map<QuizDto>(quiz);
+            var ipAddress = accessor.HttpContext.Connection.RemoteIpAddress.ToString();
+            var token = Request.Cookies["token"] ?? Guid.NewGuid().ToString("N");
+            var quizTask = context.Quizes.Include(q => q.Questions).ThenInclude(q => q.Options).SingleOrDefaultAsync(q => q.Id == id);
+            var response = context.Responses.Include(r => r.Answers).Include(r => r.Quiz).Where(r => r.Token == token).SingleOrDefaultAsync(r => r.Quiz.Id == id);
+
+            await Task.WhenAll(response, quizTask);
+
+            var quiz = quizTask.Result;
+            if (response.Result == null) {
+                var quizDto = mapper.Map<QuizDto>(quiz);
+                return new QuizResponseDto(quizDto)
+                {
+                    IpAddress = ipAddress,
+                    Token = token
+                };
             }
 
-            return NotFound(id);
+            var quizExists = context.Quizes.Any(q => q.Id == id);
+            if (!quizExists)
+            {
+                return NotFound(id);
+            }
+
+            var responseDto = mapper.Map<QuizResponseDto>(response.Result);
+            return responseDto;
         }
 
         [HttpPut]

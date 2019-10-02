@@ -1,5 +1,6 @@
 ﻿namespace Quiz.Data.Models
 {
+    using System.Collections.Generic;
     using Microsoft.EntityFrameworkCore;
 
     public class QuizContext : DbContext, IQuizContext
@@ -16,6 +17,8 @@
 
         public DbSet<Answer> Answers { get; set; }
 
+        public DbSet<QuizResponse> Responses { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite("Data Source=Quiz.db");
@@ -31,6 +34,14 @@
             modelBuilder.Entity<Question>()
                 .HasMany(question => question.Options)
                 .WithOne(option => option.Question)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<QuizResponse>()
+                .HasOne(response => response.Quiz);
+
+            modelBuilder.Entity<QuizResponse>()
+                .HasMany(response => response.Answers)
+                .WithOne(answer => answer.Response)
                 .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);

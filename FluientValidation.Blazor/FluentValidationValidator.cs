@@ -10,7 +10,7 @@ namespace Microsoft.AspNetCore.Components.Forms
 
         [CascadingParameter] EditContext CurrentEditContext { get; set; }
 
-        protected override void OnInit()
+        protected override void OnInitialized()
         {
             if (ValidationFactory == null)
             {

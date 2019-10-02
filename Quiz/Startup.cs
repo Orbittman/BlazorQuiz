@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using AutoMapper;
 
 using Quiz.Data.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Quiz
 {
@@ -35,10 +36,10 @@ namespace Quiz
                     });
             });
 
-            services.AddControllers()
-                .AddNewtonsoftJson();
+            services.AddControllers().AddNewtonsoftJson();
 
-            services.AddAutoMapper(ex => ex.AddProfile<Mapping.MapperProfile>());
+            services.AddAutoMapper(ex => ex.AddProfile<Mapping.MapperProfile>(), new System.Reflection.Assembly[0]);
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             // Add registered services
             services.AddDbContext<IQuizContext, QuizContext>(ServiceLifetime.Transient);
@@ -59,7 +60,7 @@ namespace Quiz
             }
 
             app.UseRouting();
-            app.UseAuthorization();
+            //app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
