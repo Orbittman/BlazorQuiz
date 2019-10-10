@@ -1,14 +1,14 @@
 ﻿@using Models.Api
 
-<InputText bind-Value="@Question.Text" />
+<InputText @bind-Value="@Question.Text" />
 <button type="button" class="btn btn-secondary" @onclick=@(() => RemoveQuestion(Question))><span class="glyphicon glyphicon-minus"></span></button>
 <input type="button" class="btn btn-primary" @onclick=@AddOption value="Add option" />
 <ValidationMessage For="@(() => Question.Text)" />
 @foreach (var option in Question.Options)
 {
     <div>
-        <InputText bind-Value="@option.Text" />
-        <InputCheckbox bind-Value="@option.Answer" />
+        <InputText @bind-Value="@option.Text" />
+        <InputCheckbox @bind-Value="@option.Answer" />
     </div>
 }
 

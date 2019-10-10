@@ -1,7 +1,9 @@
 ﻿using Infrastructure;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using System;
 
-namespace Microsoft.AspNetCore.Components.Forms
+namespace FluentValidation.Blazor
 {
     public class FluentValidationValidator : ComponentBase
     {

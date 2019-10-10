@@ -1,6 +1,7 @@
 ﻿@page "/quizes"
 @inject Client.IApiClient client
 @using Models.Api
+@using FluentValidation.Blazor
 @using System.Linq
 
 <h1>Admin</h1>
@@ -41,7 +42,7 @@ else
 
     private bool showAddQuiz { get; set; } = false;
 
-    public QuizDto newQuiz { get; set; } = new QuizDto { Questions = new List<QuestionDto>() };
+    public QuizDto newQuiz { get; set; } = new QuizDto { Questions = new List<QuestionDto>(), Name="New Quiz" };
 
     protected override async Task OnInitializedAsync()
     {

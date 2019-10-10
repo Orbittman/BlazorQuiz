@@ -1,6 +1,6 @@
 ﻿@using Models.Api
 
-<InputText bind-Value="@Quiz.Name" />
+<InputText @bind-Value="@Quiz.Name" />
 <ValidationMessage For="@(() => Quiz.Name)" />
 <input type="button" class="btn btn-primary" @onclick="@AddQuestion" value="Add question" />
 <ValidationMessage For="@(() => Quiz.Questions)" />
