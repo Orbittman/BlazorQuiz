@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Models.Api
 {
@@ -9,5 +10,7 @@ namespace Models.Api
         public string Text { get; set; }
 
         public List<OptionDto> Options { get; set; } = new List<OptionDto>();
+
+        public Guid Key { get; set; } = Guid.NewGuid();
     }
 }

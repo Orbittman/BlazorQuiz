@@ -1,0 +1,32 @@
+﻿@using Models.Api;
+
+@if (SelectedQuiz == null){
+    <span>No quiz selected</span>
+}else{
+<Card>
+    <CardHeader>
+        <CardTitle>@SelectedQuiz.Name</CardTitle>
+        <CardBody>
+            <ListGroup>
+                @foreach(var question in SelectedQuiz.Questions){
+                <ListGroupItem>
+                    <Heading Size="HeadingSize.Is4">@question.Text</Heading>
+                    <Container>
+                        @foreach(var option in question.Options){
+                        <Paragraph Color="@(@option.Answer ? TextColor.Primary : TextColor.Info)" Margin="Margin.Is3.FromLeft">
+                            @option.Text
+                        </Paragraph>
+                        }
+                    </Container>
+                </ListGroupItem>
+                }
+            </ListGroup>
+        </CardBody>
+    </CardHeader>
+</Card>
+}
+
+@code{
+    [Parameter]
+    public QuizDto SelectedQuiz { get; set; }
+}

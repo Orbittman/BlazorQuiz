@@ -1,4 +1,6 @@
-﻿namespace Models.Api
+﻿using System;
+
+namespace Models.Api
 {
     public class OptionDto
     {
@@ -7,5 +9,7 @@
         public string Text { get; set; }
 
         public bool Answer { get; set; }
+
+        public Guid Key { get; set; } = Guid.NewGuid();
     }
 }

@@ -1,17 +1,41 @@
 ﻿@using Models.Api
 
-<InputText @bind-Value="@Question.Text" />
-<button type="button" class="btn btn-secondary" @onclick=@(() => RemoveQuestion(Question))><span class="glyphicon glyphicon-minus"></span></button>
-<input type="button" class="btn btn-primary" @onclick=@AddOption value="Add option" />
-<ValidationMessage For="@(() => Question.Text)" />
-@foreach (var option in Question.Options)
-{
-    <div>
-        <InputText @bind-Value="@option.Text" />
-        <InputCheckbox @bind-Value="@option.Answer" />
-    </div>
-}
-
+<CardHeader>
+    <Field>
+        <FieldBody ColumnSize="ColumnSize.Is10">
+            <Addons>
+                <Addon AddonType="AddonType.Body">
+                    <TextEdit Placeholder="Question text" @bind-Text="@Question.Text" />
+                </Addon>
+                <Addon AddonType="AddonType.End">
+                    <Button Clicked="(() => RemoveQuestion(Question))" Color="Color.Danger"><Icon Name="IconName.Delete" /></Button>
+                </Addon>
+            </Addons>
+        </FieldBody>
+        <ValidationMessage For="@(() => Question.Text)" />
+    </Field>
+</CardHeader>
+<CardBody>
+    @foreach (var option in Question.Options)
+    {
+        <Field>
+            <FieldBody ColumnSize="ColumnSize.Is10">
+                <Addons>
+                    <Addon AddonType="AddonType.Body">
+                        <TextEdit @bind-Text="@option.Text" Placeholder="Option text" />
+                    </Addon>
+                    <Addon AddonType="AddonType.End">
+                        <CheckEdit RadioGroup="@Question.Key.ToString()" @bind-Checked="@option.Answer">Answer</CheckEdit>
+                    </Addon>
+                    <Addon AddonType="AddonType.End">
+                        <Button Clicked="() => RemoveOption(option)" Color="Color.Danger"><Icon Name="IconName.Delete" /></Button>
+                    </Addon>
+                </Addons>
+            </FieldBody>
+        </Field>
+    }
+    <Button Clicked="AddOption" Color="Color.Primary"><Icon Name="IconName.New" />Add Option</Button>
+</CardBody>
 @functions {
     [Parameter]
     public QuestionDto Question { get; set; }
@@ -22,5 +46,10 @@
     void AddOption()
     {
         Question.Options.Add(new OptionDto());
+    }
+
+    void RemoveOption(OptionDto option)
+    {
+        Question.Options.Remove(option);
     }
 }

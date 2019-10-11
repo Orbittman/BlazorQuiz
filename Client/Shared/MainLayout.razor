@@ -1,15 +1,57 @@
 @inherits LayoutComponentBase
 
-<div class="sidebar">
-    <NavMenu />
-</div>
+@using Client.State;
 
-<div class="main">
-    <div class="top-row px-4">
-        <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
-    </div>
+@inject QuizManager quizManager
 
-    <div class="content px-4">
-        @Body
-    </div>
-</div>
+<Sidebar @ref="sidebar">
+    <SidebarContent>
+        <SidebarBrand>
+            <a href="">Parmenion Quiz</a>
+        </SidebarBrand>
+        <SidebarNavigation>
+            <SidebarLabel>Main</SidebarLabel>
+            <SidebarItem>
+                <SidebarLink To="" Title="Home">
+                    <Icon Name="IconName.Dashboard" Margin="Margin.Is3.FromRight" />Home
+                </SidebarLink>
+            </SidebarItem>
+            <SidebarItem>
+                <SidebarLink Toggled="(isOpen) => quizAdminItems.Toggle(isOpen)" IsShow="true">
+                    <Icon Name="IconName.Edit" Margin="Margin.Is3.FromRight" />Quiz admin
+                </SidebarLink>
+                <SidebarSubItem @ref="quizAdminItems" IsShow="true">
+                    <SidebarItem>
+                        <SidebarLink To="quiz/new">
+                            <Icon Name="IconName.New" />New quiz
+                        </SidebarLink>
+                    </SidebarItem>
+                    <SidebarItem>
+                        <SidebarLink To="quiz"><Icon Name="IconName.Edit" />Edit quizes</SidebarLink>
+                    </SidebarItem>
+                </SidebarSubItem>
+            </SidebarItem>
+            <SidebarItem>
+                <SidebarLink To="/about" Title="About">
+                    <Icon Name="IconName.Dashboard" Margin="Margin.Is3.FromRight" />About
+                </SidebarLink>
+            </SidebarItem>
+        </SidebarNavigation>
+    </SidebarContent>
+</Sidebar>
+
+<Container Margin="Margin.Is4">
+    @Body
+</Container>
+
+@code{
+    Sidebar sidebar;
+    SidebarSubItem quizAdminItems;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await quizManager.InitialiseQuizes();
+
+        // quizManager.OnChange += StateHasChanged;
+    }
+}

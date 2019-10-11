@@ -1,10 +1,16 @@
 using Client.Extensions;
 using FluentValidation;
 using Infrastructure;
+
+using Blazorise;
+using Blazorise.Material;
+using Blazorise.Icons.Material;
+
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Models.Validation;
-using System;
+using System.Threading.Tasks;
+using Client.State;
 
 namespace Client
 {
@@ -14,14 +20,28 @@ namespace Client
         {
             services.AddSingleton<IApiClient, ApiClient>();
             services.AddSingleton<IValidationFactory, ValidationFactory>();
+            services.AddSingleton<QuizManager>();
+
             services.AddTransient<IValidator, QuizDtoValidator>();
             services.AddTransient<IValidator, QuestionDtoValidator>();
+
+            services
+                .AddBlazorise(options =>
+                {
+                    options.ChangeTextOnKeyPress = true;
+                }) // from v0.6.0-preview4
+                .AddMaterialProviders()
+                .AddMaterialIcons();
         }
 
-        public void Configure(IComponentsApplicationBuilder app)
+        public Task Configure(IComponentsApplicationBuilder app)
         {
+            app.Services
+                .UseMaterialProviders()
+                .UseMaterialIcons();
             app.AddComponent<App>("app");
-            app.Initialise();
+
+            return app.Initialise();
         }
     }
 }

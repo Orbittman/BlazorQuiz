@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace Client.Responses
+﻿namespace Client.Responses
 {
     public class InitialisationResponse
     {

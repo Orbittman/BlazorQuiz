@@ -24,12 +24,12 @@ namespace Infrastructure
             editContext.OnFieldChanged +=
                 (sender, eventArgs) => ValidateField(editContext, messages, eventArgs.FieldIdentifier, validationFactory);
 
-
             return editContext;
         }
 
         private static void ValidateField(EditContext editContext, ValidationMessageStore messages, in FieldIdentifier fieldIdentifier, IValidationFactory validationFactory)
         {
+            Console.WriteLine($"{editContext} : any field validation");
             var context = new ValidationContext(fieldIdentifier.Model, new PropertyChain(), new MemberNameValidatorSelector(new[] { fieldIdentifier.FieldName }));
 
             try

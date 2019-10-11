@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using Models.Api;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -59,6 +61,11 @@ namespace Client
             return true;
         }
 
+        public async Task<IEnumerable<QuizDto>> GetQuizes()
+        {
+            var response = await GetAsync<IEnumerable<QuizDto>>("api/quiz");
+            return response;
+        }
 
         private HttpClient GetClient()
         {

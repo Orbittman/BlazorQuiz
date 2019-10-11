@@ -1,0 +1,49 @@
+﻿@using Models.Api
+@using Client.State;
+
+@inject QuizManager quizManager
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+
+@if (quizManager.Quizes == null)
+{
+    <p><em>Loading ...</em></p>
+}
+else
+{
+    <Table IsHoverable="true" IsStriped="true">
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell>Date</TableHeaderCell>
+                <TableHeaderCell>Name</TableHeaderCell>
+                <TableHeaderCell>Winner</TableHeaderCell>
+                <TableHeaderCell></TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            @foreach (var quiz in quizManager.Quizes)
+            {
+                <TableRow Clicked="(() => OnSelectQuiz.InvokeAsync(quiz))">
+                    <TableRowHeader>@quiz.Date</TableRowHeader>
+                    <TableRowCell>@quiz.Name</TableRowCell>
+                    <TableRowCell>###</TableRowCell>
+                    <TableRowCell><Button Color="Color.Primary" Clicked="() => Edit(quiz)"><Icon Name="IconName.Edit" />Edit</Button></TableRowCell>
+                </TableRow>
+            }
+        </TableBody>
+    </Table>
+}
+
+@code{
+    [Parameter]
+    public EventCallback<QuizDto> OnSelectQuiz { get; set; }
+
+    protected override void OnInitialized()
+    {
+        quizManager.OnChange += StateHasChanged;
+    }
+
+    private void Edit(QuizDto quiz)
+    {
+        NavigationManager.NavigateTo($"/edit/{quiz.Id}");
+    }
+}

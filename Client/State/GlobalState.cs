@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using Models.Api;
+using System.Collections.Generic;
+using System.Net;
 
 namespace Client.State
 {

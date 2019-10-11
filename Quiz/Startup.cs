@@ -7,6 +7,9 @@ using AutoMapper;
 
 using Quiz.Data.Models;
 using Microsoft.AspNetCore.Http;
+using Blazorise.Material;
+using Blazorise.Icons.Material;
+using Blazorise;
 
 namespace Quiz
 {
@@ -48,16 +51,17 @@ namespace Quiz
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseBlazorDebugging();
             }
             else
             {
                 app.UseHsts();
             }
 
+            app.UseRouting();
+
             app.UseStaticFiles();
             app.UseClientSideBlazorFiles<Client.Startup>();
-
-            app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
