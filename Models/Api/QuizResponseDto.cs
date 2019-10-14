@@ -13,11 +13,11 @@ namespace Models.Api
             }
         }
 
-        public QuizDto Quiz { get; set; } = new QuizDto();
+        public QuizDto Quiz { get; set; }
 
-        public string Person { get; set; }
+        public string Name { get; set; }
 
-        public string IpAddress { get; set; }
+        // public string IpAddress { get; set; }
 
         public string Token { get; set; }
 

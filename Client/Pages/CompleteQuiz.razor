@@ -1,68 +1,90 @@
-﻿@page "/takequiz"
+﻿@page "/completeQuiz/{QuizId:int}"
+
+@inject QuizManager quizManager
 @inject Client.IApiClient client
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 
 @using Models.Api
+@using Client.State;
 
+<Alert Color="Color.Success" IsShow="@completed">Thanks and good luck!</Alert>
 @if (response == null)
 {
     <div>Loading</div>
 }
 else
 {
-    <span>@response.Quiz.Name</span>
+    <Heading Size="HeadingSize.Is2">@response.Quiz.Name</Heading>
+    <Container>
+        <TextEdit @bind-Text="@response.Name" Placeholder="Enter your name" />
+        <Button Color="Color.Primary" Visibility="string.IsNullOrWhiteSpace(response.Name) ? Visibility.Always : Visibility.Never">Go</Button>
+    </Container>
     <EditForm OnValidSubmit="@HandleSubmit" Model="@response">
-        <div>
-            <label for="name">Enter your name</label>
-            <input type="text" bind="name" id="name" />
-        </div>
-        @if (!string.IsNullOrWhiteSpace(name) && response != null)
+        @if (response != null && !string.IsNullOrWhiteSpace(response.Name))
         {
-            <ol>
-                @foreach (var question in response.Quiz.Questions)
-                {
-                    <li>
-                        @question.Text :
-                        <div>
-                            <ul>
-                                @foreach (var option in question.Options)
-                                {
-                                    <li>
-                                        <input type="radio" value="@(option.Text)" name="question@(question.Id)">
-                                        <label for="question@(question.Id)">@option.Text</label>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    </li>
+            <Heading Size="HeadingSize.Is3">OK @response.Name, are you a winner?</Heading>
+
+            <ListGroup>
+                @foreach (var answer in response.Answers)
+                {<Card Margin="Margin.Is4" Background="Background.Light">
+                        <ListGroupItem>
+                            <Heading Size="HeadingSize.Is4">@answer.Question.Text :</Heading>
+                            <Container>
+                                <ListGroup>
+                                    @foreach (var option in answer.Question.Options)
+                                    {
+                                        <ListGroupItem>
+                                            <CheckEdit CheckedChanged="() => Chosen(answer, option)"
+                                                       Checked="@(answer.Option?.Id == option.Id)"
+                                                       RadioGroup="@answer.Question.Id.ToString()">
+                                                @option.Text
+                                            </CheckEdit>
+                                        </ListGroupItem>
+                                    }
+                                </ListGroup>
+                            </Container>
+                        </ListGroupItem>
+                    </Card>
                 }
-            </ol>
-            <input type="submit" class="btn btn-success" value="Submit" />
+            </ListGroup>
+            <Button IsDisabled="!completed && response.Answers.Any(a => a.Option == null)"
+                    IsLoading="saving"
+                    Type="ButtonType.Submit"
+                    Color="Color.Secondary">
+                Submit
+            </Button>
         }
     </EditForm>
 }
 
 @functions{
-        string name;
-        QuizResponseDto response;
+    public QuizResponseDto response;
 
-    protected override async Task OnInitializedAsync()
+    [Parameter]
+    public int QuizId { get; set; }
+    bool saving = false;
+    bool completed = false;
+
+    protected override void OnInitialized()
     {
-        // get the IP address of the requesting machine
-        if (int.TryParse(ParseQueryParameter("quiz"), out var quizId))
+        response = new QuizResponseDto(null);
+        quizManager.OnChange += () =>
         {
-            response = await client.GetAsync<QuizResponseDto>($"api/quiz/responses/{quizId}");
-        }
+            var quiz = quizManager.Quizes.SingleOrDefault(q => q.Id == QuizId) ?? throw new Exception($"The quiz id {QuizId} wasn't found");
+            response = new QuizResponseDto(quiz);
+        };
     }
 
-    private string ParseQueryParameter(string name)
+    private void Chosen(AnswerDto answer, OptionDto option)
     {
-        var uri = new Uri(UriHelper.BaseUri);
-        return Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue(name, out var type) ? type.First() : "";
+        answer.Option = option;
     }
 
-    async Task<bool> HandleSubmit()
+    private async Task HandleSubmit()
     {
-        return true;
+        saving = true;
+        await client.PutAsync<QuizResponseDto>("api/quiz/responses", response);
+        saving = false;
+        completed = true;
     }
 }

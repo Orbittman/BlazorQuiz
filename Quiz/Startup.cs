@@ -7,9 +7,8 @@ using AutoMapper;
 
 using Quiz.Data.Models;
 using Microsoft.AspNetCore.Http;
-using Blazorise.Material;
-using Blazorise.Icons.Material;
-using Blazorise;
+using FluentValidation.AspNetCore;
+using Models.Validation;
 
 namespace Quiz
 {
@@ -26,6 +25,14 @@ namespace Quiz
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services
+                .AddMvc()
+                .AddFluentValidation(options =>
+                { 
+                    options.ImplicitlyValidateChildProperties = true;
+                    options.RegisterValidatorsFromAssemblyContaining<QuizDtoValidator>();
+                });
+
             services.AddCors(options =>
             {
                 options.AddPolicy(corsOrigins,
@@ -39,7 +46,6 @@ namespace Quiz
             });
 
             services.AddControllers().AddNewtonsoftJson();
-
             services.AddAutoMapper(ex => ex.AddProfile<Mapping.MapperProfile>(), new System.Reflection.Assembly[0]);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddDbContext<IQuizContext, QuizContext>(ServiceLifetime.Transient);

@@ -24,11 +24,13 @@ namespace Client
 
             services.AddTransient<IValidator, QuizDtoValidator>();
             services.AddTransient<IValidator, QuestionDtoValidator>();
+            services.AddTransient<IValidator, OptionDtoValidator>();
+            services.AddTransient<IValidator, QuizResponseDtoValidator>();
 
             services
                 .AddBlazorise(options =>
                 {
-                    options.ChangeTextOnKeyPress = true;
+                    options.ChangeTextOnKeyPress = false;
                 }) // from v0.6.0-preview4
                 .AddMaterialProviders()
                 .AddMaterialIcons();

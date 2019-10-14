@@ -6,10 +6,9 @@ namespace Quiz.Controllers
     using Microsoft.EntityFrameworkCore;
     using Models.Api;
     using AutoMapper;
-    using System;
-    using Quiz.Extensions;
     using Microsoft.AspNetCore.Http;
     using System.Threading.Tasks;
+    using System;
 
     [Route("api/[controller]")]
     [ApiController]
@@ -30,38 +29,63 @@ namespace Quiz.Controllers
         public ActionResult<QuizDto[]> GetQuizes()
         {
             var quizes = context.Quizes.Include(q => q.Questions).ThenInclude(q => q.Options).ToArray();
+            if (string.IsNullOrEmpty(accessor.HttpContext.Request.Cookies["token"]))
+            {
+                accessor.HttpContext.Response.Cookies.Append("token", Guid.NewGuid().ToString(), new CookieOptions { Expires = DateTime.Now.AddYears(20), HttpOnly = true, Secure = true, IsEssential = true, Path=" / " });
+            }
+
             return mapper.Map<QuizDto[]>(quizes);
         }
 
-        [HttpGet("responses/{id:int}")]
-        public async Task<ActionResult<QuizResponseDto>> GetQuiz(int id)
+        [HttpPut("responses")]
+        public async Task<ActionResult> PutResponse(QuizResponseDto quizResponse)
         {
-            var ipAddress = accessor.HttpContext.Connection.RemoteIpAddress.ToString();
-            var token = Request.Cookies["token"] ?? Guid.NewGuid().ToString("N");
-            var quizTask = context.Quizes.Include(q => q.Questions).ThenInclude(q => q.Options).SingleOrDefaultAsync(q => q.Id == id);
-            var response = context.Responses.Include(r => r.Answers).Include(r => r.Quiz).Where(r => r.Token == token).SingleOrDefaultAsync(r => r.Quiz.Id == id);
-
-            await Task.WhenAll(response, quizTask);
-
-            var quiz = quizTask.Result;
-            if (response.Result == null) {
-                var quizDto = mapper.Map<QuizDto>(quiz);
-                return new QuizResponseDto(quizDto)
-                {
-                    IpAddress = ipAddress,
-                    Token = token
-                };
-            }
-
-            var quizExists = context.Quizes.Any(q => q.Id == id);
-            if (!quizExists)
+            await Task.Run(() =>
             {
-                return NotFound(id);
-            }
+                var response = new QuizResponse
+                {
+                    Answers = quizResponse.Answers.Select(a => new Answer { QuestionId = a.Question.Id , OptionId = a.Option.Id }).ToList(),
+                    Person = quizResponse.Name,
+                    QuizId = quizResponse.Quiz.Id
+                };
 
-            var responseDto = mapper.Map<QuizResponseDto>(response.Result);
-            return responseDto;
+                context.Responses.Add(response);
+
+                context.SaveChanges();
+            });
+
+            return Ok();
         }
+
+        //[HttpGet("responses/{id:int}")]
+        //public async Task<ActionResult<QuizResponseDto>> GetQuiz(int id)
+        //{
+        //    var ipAddress = accessor.HttpContext.Connection.RemoteIpAddress.ToString();
+        //    var token = Request.Cookies["token"] ?? Guid.NewGuid().ToString("N");
+        //    var quizTask = context.Quizes.Include(q => q.Questions).ThenInclude(q => q.Options).SingleOrDefaultAsync(q => q.Id == id);
+        //    var response = context.Responses.Include(r => r.Answers).Include(r => r.Quiz).Where(r => r.Token == token).SingleOrDefaultAsync(r => r.Quiz.Id == id);
+
+        //    await Task.WhenAll(response, quizTask);
+
+        //    var quiz = quizTask.Result;
+        //    if (response.Result == null) {
+        //        var quizDto = mapper.Map<QuizDto>(quiz);
+        //        return new QuizResponseDto(quizDto)
+        //        {
+        //            IpAddress = ipAddress,
+        //            Token = token
+        //        };
+        //    }
+
+        //    var quizExists = context.Quizes.Any(q => q.Id == id);
+        //    if (!quizExists)
+        //    {
+        //        return NotFound(id);
+        //    }
+
+        //    var responseDto = mapper.Map<QuizResponseDto>(response.Result);
+        //    return responseDto;
+        //}
 
         [HttpPut]
         public ActionResult<QuizDto> Put(QuizDto quizDto)

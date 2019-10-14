@@ -50,6 +50,7 @@
     <Content Remove="Pages\QuizAdmin.razor" />
   </ItemGroup>
   <ItemGroup>
+    <Watch Remove="Pages\Loading.razor" />
     <Watch Remove="Pages\QuestionsTable.razor" />
   </ItemGroup>
 </Project>

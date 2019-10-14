@@ -16,6 +16,7 @@ namespace Infrastructure
 
         public IValidator GetValidator(object model)
         {
+            Console.WriteLine($"Getting validator for type {model.GetType().Name}");
             var validator = _validators.SingleOrDefault(v => v.CanValidateInstancesOfType(model.GetType())) ?? throw new InvalidOperationException($"There is no validator registered for the type {model.GetType().Name}");
             return validator;
         }

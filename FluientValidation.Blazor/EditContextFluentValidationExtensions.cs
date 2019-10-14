@@ -29,27 +29,31 @@ namespace Infrastructure
 
         private static void ValidateField(EditContext editContext, ValidationMessageStore messages, in FieldIdentifier fieldIdentifier, IValidationFactory validationFactory)
         {
-            Console.WriteLine($"{editContext} : any field validation");
+            var model = fieldIdentifier.Model;
+            Console.WriteLine($"{string.Join(" : ", model.GetType().GetProperties().Select(p => p.GetValue(model, null)))} : any field validation");
             var context = new ValidationContext(fieldIdentifier.Model, new PropertyChain(), new MemberNameValidatorSelector(new[] { fieldIdentifier.FieldName }));
 
             try
             {
                 var validator = validationFactory.GetValidator(fieldIdentifier.Model);
+                Console.WriteLine($"Validating using {validator.GetType().Name}");
                 var validationResult = validator.Validate(context);
 
                 messages.Clear(fieldIdentifier);
                 messages.Add(fieldIdentifier, validationResult.Errors.Select(error => error.ErrorMessage));
+                Console.WriteLine($"Errors were: {string.Join(",", validationResult.Errors.Select(error => error.ErrorMessage))}");
 
                 editContext.NotifyValidationStateChanged();
             }
             catch (InvalidOperationException exception)
             {
-                // Do something with this maybe?
+                Console.WriteLine($"Error: {exception.Message}");
             }
         }
 
         private static void ValidateModel(EditContext editContext, ValidationMessageStore messages, IValidationFactory validationFactory)
         {
+            Console.WriteLine($"{editContext.Model.GetType().Name} : any model validation");
             var validator = validationFactory.GetValidator(editContext.Model);
             var validationResult = validator.Validate(editContext.Model);
 

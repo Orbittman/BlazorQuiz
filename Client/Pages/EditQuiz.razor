@@ -7,73 +7,84 @@
 @inject QuizManager quizManager
 @inject IApiClient  client
 
-@if (Quiz != null)
+@if (Quiz == null)
+{
+    <Loading />
+}
+else
 {
     <EditForm OnValidSubmit="HandleSubmit" Model="@Quiz">
         <FluentValidationValidator />
         <Field>
             <FieldBody ColumnSize="ColumnSize.Is10">
-                <TextEdit Placeholder="Question name" @bind-Text="@Quiz.Name" />
+                <InputText placeholder="Question name" class="form-control" @bind-Value="@Quiz.Name" />
             </FieldBody>
         </Field>
         <ValidationMessage For="@(() => Quiz.Name)" />
-
-        @if (Quiz != null)
+                
+        @foreach (var question in Quiz.Questions)
         {
-            @foreach (var question in Quiz.Questions)
-            {
-                <Card Margin="Margin.Is4" Background="Background.Light">
-                    <Field>
-                        <EditQuestion RemoveQuestion="@RemoveQuestion" Question="@question" />
-                    </Field>
-                </Card>
-            }
-        }
+            <Card Margin="Margin.Is4" Background="Background.Light">
+                <Field>
+                    <EditQuestion RemoveQuestion="@RemoveQuestion" Question="@question" />
+                </Field>
+            </Card>
+        }        
 
         <ValidationMessage For="@(() => Quiz.Questions)" />
         <Button Clicked="@AddQuestion" Color="Color.Primary"><Icon Name="IconName.New" />Add question</Button>
         <Button Type="ButtonType.Submit" Color="Color.Secondary">Save</Button>
     </EditForm>
 }
-else
-{
-    <Heading Size="HeadingSize.Is4">There is no quiz with the id @Id</Heading>
-}
-
-@code {
-    [Parameter]
-    public int Id { get; set; }
-
-    [Parameter]
-    public QuizDto Quiz { get; set; }
-
-    public void AddQuestion()
+    @*else
     {
-        Quiz.Questions.Add(new QuestionDto { });
-    }
+        <Heading Size="HeadingSize.Is4">There is no quiz with the id @Id</Heading>
+    }*@
 
-    public void RemoveQuestion(QuestionDto question)
-    {
-        Quiz.Questions.Remove(question);
-        base.StateHasChanged();
-    }
+    @code {
+        [Parameter]
+        public int Id { get; set; }
 
-    protected override void OnInitialized()
-    {
-        Quiz = quizManager.Quizes.SingleOrDefault(q => q.Id == Id);
-    }
+        [Parameter]
+        public QuizDto Quiz { get; set; }
 
-    private void HandleSubmit()
-    {
-        Console.WriteLine($"Saving quiz id {Quiz.Id}");
-        if (Quiz.Id == 0)
+        public void AddQuestion()
         {
-            client.PutAsync<QuizDto>("api/quiz", Quiz);
-            quizManager.Quizes.Add(Quiz);
+            Quiz.Questions.Add(new QuestionDto { });
         }
-        else
+
+        public void RemoveQuestion(QuestionDto question)
         {
-            client.PostAsync<QuizDto>("api/quiz", Quiz);
+            Quiz.Questions.Remove(question);
+            base.StateHasChanged();
+        }
+
+        protected override void OnInitialized()
+        {
+            if (quizManager.Quizes == null)
+            {
+                quizManager.OnChange += () =>
+                {
+                    Quiz = quizManager.Quizes.SingleOrDefault(q => q.Id == Id);
+                    StateHasChanged();
+                };
+            }
+            else
+            {
+                Quiz = quizManager.Quizes.SingleOrDefault(q => q.Id == Id);
+            }
+        }
+
+        private void HandleSubmit()
+        {
+            if (Quiz.Id == 0)
+            {
+                client.PutAsync<QuizDto>("api/quiz", Quiz);
+                quizManager.Quizes.Add(Quiz);
+            }
+            else
+            {
+                client.PostAsync<QuizDto>("api/quiz", Quiz);
+            }
         }
     }
-}
