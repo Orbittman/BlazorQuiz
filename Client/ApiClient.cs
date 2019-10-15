@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -11,7 +12,7 @@ namespace Client
 {
     public class ApiClient : IApiClient
     {
-        private Uri baseAddress = new Uri("http://localhost:5000/");
+        private Uri baseAddress = new Uri("https://localhost:5001/");
 
         public ApiClient()
         {
@@ -25,6 +26,7 @@ namespace Client
             {
 
             var result = await client.GetAsync(path);
+            // Console.WriteLine($"Headers {string.Join(":",  result.Headers.Select(h => $"{h.Key}#{string.Join("-", h.Value)}"))}");
             if (result.IsSuccessStatusCode)
             {
                 var content = await result.Content.ReadAsStringAsync();
@@ -66,12 +68,18 @@ namespace Client
             var response = await GetAsync<IEnumerable<QuizDto>>("api/quiz");
             return response;
         }
+        
+        public async Task<QuizResponseDto> GetResponse(int quizId)
+        {
+            var response = await GetAsync<QuizResponseDto>($"api/quiz/responses/{quizId}");
+            return response;
+        }
 
         private HttpClient GetClient()
         {
             var client = new HttpClient
             {
-                BaseAddress = new Uri("http://localhost:5000/")
+                BaseAddress = baseAddress
             };
 
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

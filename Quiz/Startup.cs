@@ -65,7 +65,7 @@ namespace Quiz
             }
 
             app.UseRouting();
-
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseClientSideBlazorFiles<Client.Startup>();
             app.UseEndpoints(endpoints =>

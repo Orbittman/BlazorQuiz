@@ -17,7 +17,7 @@ namespace Models.Api
 
         public string Name { get; set; }
 
-        // public string IpAddress { get; set; }
+        public bool Completed { get; set; }
 
         public string Token { get; set; }
 

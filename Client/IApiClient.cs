@@ -13,5 +13,7 @@ namespace Client
         Task<bool> PostAsync<TRequest>(string path, TRequest model);
 
         Task<IEnumerable<QuizDto>> GetQuizes();
+
+        Task<QuizResponseDto> GetResponse(int quizId);
     }
 }

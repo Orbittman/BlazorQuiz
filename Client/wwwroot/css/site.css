@@ -8,6 +8,16 @@ body app {
     align-items: stretch;
 }
 
+.loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 30em;
+    height: 30em;
+    margin-top: -15em;
+    margin-left: -15em;
+}
+
 .app-main {
     width: 100%;
 }

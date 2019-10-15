@@ -2,7 +2,7 @@
 
 @using Client.State;
 
-@inject QuizManager quizManager
+@inject IQuizManager quizManager
 
 <Sidebar @ref="sidebar">
     <SidebarContent>
@@ -22,7 +22,7 @@
                 </SidebarLink>
                 <SidebarSubItem @ref="quizAdminItems" IsShow="true">
                     <SidebarItem>
-                        <SidebarLink To="quiz/new">
+                        <SidebarLink To="edit/0">
                             <Icon Name="IconName.New" />New quiz
                         </SidebarLink>
                     </SidebarItem>
@@ -41,7 +41,7 @@
 </Sidebar>
 
 <Container Margin="Margin.Is4">
-    @Body
+        @Body
 </Container>
 
 @code{

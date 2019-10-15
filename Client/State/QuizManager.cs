@@ -25,6 +25,16 @@ namespace Client.State
             NotifyStateChanged();
         }
 
+        public async Task<QuizDto> GetQuiz(int Id)
+        {
+            if(Quizes == null)
+            {
+                await InitialiseQuizes();
+            }
+
+            return Quizes.SingleOrDefault(q => q.Id == Id);
+        }
+
         private void NotifyStateChanged() => OnChange?.Invoke();
     }
 }

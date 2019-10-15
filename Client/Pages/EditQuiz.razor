@@ -4,7 +4,7 @@
 @using Client.State;
 @using FluentValidation.Blazor
 
-@inject QuizManager quizManager
+@inject IQuizManager quizManager
 @inject IApiClient  client
 
 @if (Quiz == null)
@@ -29,62 +29,47 @@ else
                     <EditQuestion RemoveQuestion="@RemoveQuestion" Question="@question" />
                 </Field>
             </Card>
-        }        
+        }
 
         <ValidationMessage For="@(() => Quiz.Questions)" />
         <Button Clicked="@AddQuestion" Color="Color.Primary"><Icon Name="IconName.New" />Add question</Button>
         <Button Type="ButtonType.Submit" Color="Color.Secondary">Save</Button>
     </EditForm>
 }
-    @*else
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    [Parameter]
+    public QuizDto Quiz { get; set; }
+
+    public void AddQuestion()
     {
-        <Heading Size="HeadingSize.Is4">There is no quiz with the id @Id</Heading>
-    }*@
+        Quiz.Questions.Add(new QuestionDto { });
+    }
 
-    @code {
-        [Parameter]
-        public int Id { get; set; }
+    public void RemoveQuestion(QuestionDto question)
+    {
+        Quiz.Questions.Remove(question);
+        base.StateHasChanged();
+    }
 
-        [Parameter]
-        public QuizDto Quiz { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        Quiz = await quizManager.GetQuiz(Id) ?? new QuizDto();
+    }
 
-        public void AddQuestion()
+    private void HandleSubmit()
+    {
+        if (Quiz.Id == 0)
         {
-            Quiz.Questions.Add(new QuestionDto { });
+            client.PutAsync<QuizDto>("api/quiz", Quiz);
+            quizManager.Quizes.Add(Quiz);
         }
-
-        public void RemoveQuestion(QuestionDto question)
+        else
         {
-            Quiz.Questions.Remove(question);
-            base.StateHasChanged();
-        }
-
-        protected override void OnInitialized()
-        {
-            if (quizManager.Quizes == null)
-            {
-                quizManager.OnChange += () =>
-                {
-                    Quiz = quizManager.Quizes.SingleOrDefault(q => q.Id == Id);
-                    StateHasChanged();
-                };
-            }
-            else
-            {
-                Quiz = quizManager.Quizes.SingleOrDefault(q => q.Id == Id);
-            }
-        }
-
-        private void HandleSubmit()
-        {
-            if (Quiz.Id == 0)
-            {
-                client.PutAsync<QuizDto>("api/quiz", Quiz);
-                quizManager.Quizes.Add(Quiz);
-            }
-            else
-            {
-                client.PostAsync<QuizDto>("api/quiz", Quiz);
-            }
+            client.PostAsync<QuizDto>("api/quiz", Quiz);
         }
     }
+}

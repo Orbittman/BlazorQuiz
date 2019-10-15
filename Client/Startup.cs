@@ -20,7 +20,7 @@ namespace Client
         {
             services.AddSingleton<IApiClient, ApiClient>();
             services.AddSingleton<IValidationFactory, ValidationFactory>();
-            services.AddSingleton<QuizManager>();
+            services.AddSingleton<IQuizManager, QuizManager>();
 
             services.AddTransient<IValidator, QuizDtoValidator>();
             services.AddTransient<IValidator, QuestionDtoValidator>();

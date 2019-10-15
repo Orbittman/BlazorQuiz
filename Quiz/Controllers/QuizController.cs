@@ -31,7 +31,7 @@ namespace Quiz.Controllers
             var quizes = context.Quizes.Include(q => q.Questions).ThenInclude(q => q.Options).ToArray();
             if (string.IsNullOrEmpty(accessor.HttpContext.Request.Cookies["token"]))
             {
-                accessor.HttpContext.Response.Cookies.Append("token", Guid.NewGuid().ToString(), new CookieOptions { Expires = DateTime.Now.AddYears(20), HttpOnly = true, Secure = true, IsEssential = true, Path=" / " });
+                accessor.HttpContext.Response.Cookies.Append("token", Guid.NewGuid().ToString(), new CookieOptions { Expires=DateTime.Now.AddYears(20), HttpOnly=true, IsEssential=true, Path="/" });
             }
 
             return mapper.Map<QuizDto[]>(quizes);
@@ -40,52 +40,49 @@ namespace Quiz.Controllers
         [HttpPut("responses")]
         public async Task<ActionResult> PutResponse(QuizResponseDto quizResponse)
         {
-            await Task.Run(() =>
+            var existingResponse = await context.Responses.SingleOrDefaultAsync(r => r.Id == quizResponse.Quiz.Id && r.Token == GetUserToken().ToString());
+            if (existingResponse != null)
             {
-                var response = new QuizResponse
-                {
-                    Answers = quizResponse.Answers.Select(a => new Answer { QuestionId = a.Question.Id , OptionId = a.Option.Id }).ToList(),
-                    Person = quizResponse.Name,
-                    QuizId = quizResponse.Quiz.Id
-                };
+                return BadRequest($"This quiz has already been answered by {existingResponse.Person}");
+            }
 
-                context.Responses.Add(response);
+            var response = new QuizResponse
+            {
+                Answers = quizResponse.Answers.Select(a => new Answer { QuestionId = a.Question.Id, OptionId = a.Option.Id }).ToList(),
+                Person = quizResponse.Name,
+                QuizId = quizResponse.Quiz.Id,
+                Token = GetUserToken().ToString()
+            };
 
-                context.SaveChanges();
-            });
+            await context.Responses.AddAsync(response);
+            context.SaveChanges();
 
             return Ok();
         }
 
-        //[HttpGet("responses/{id:int}")]
-        //public async Task<ActionResult<QuizResponseDto>> GetQuiz(int id)
-        //{
-        //    var ipAddress = accessor.HttpContext.Connection.RemoteIpAddress.ToString();
-        //    var token = Request.Cookies["token"] ?? Guid.NewGuid().ToString("N");
-        //    var quizTask = context.Quizes.Include(q => q.Questions).ThenInclude(q => q.Options).SingleOrDefaultAsync(q => q.Id == id);
-        //    var response = context.Responses.Include(r => r.Answers).Include(r => r.Quiz).Where(r => r.Token == token).SingleOrDefaultAsync(r => r.Quiz.Id == id);
+        [HttpGet("responses/{quizId:int}")]
+        public async Task<QuizResponseDto> GetResponse(int quizId)
+        {
+            var quizResponse = await context
+                .Responses
+                .Include(r => r.Answers)
+                .ThenInclude(a => a.Question)
+                .ThenInclude(q => q.Options)
+                .Include(r => r.Quiz)
+                .SingleOrDefaultAsync(r => r.QuizId == quizId && r.Token == GetUserToken().ToString());
+            if (quizResponse != null)
+            {
+                return new QuizResponseDto(mapper.Map<QuizDto>(quizResponse.Quiz))
+                {
+                    Token = quizResponse.Token,
+                    Answers = quizResponse.Answers.Select(a => mapper.Map<AnswerDto>(a)).ToList(),
+                    Name = quizResponse.Person,
+                    Completed = true
+                };
+            }
 
-        //    await Task.WhenAll(response, quizTask);
-
-        //    var quiz = quizTask.Result;
-        //    if (response.Result == null) {
-        //        var quizDto = mapper.Map<QuizDto>(quiz);
-        //        return new QuizResponseDto(quizDto)
-        //        {
-        //            IpAddress = ipAddress,
-        //            Token = token
-        //        };
-        //    }
-
-        //    var quizExists = context.Quizes.Any(q => q.Id == id);
-        //    if (!quizExists)
-        //    {
-        //        return NotFound(id);
-        //    }
-
-        //    var responseDto = mapper.Map<QuizResponseDto>(response.Result);
-        //    return responseDto;
-        //}
+            return null;
+        }
 
         [HttpPut]
         public ActionResult<QuizDto> Put(QuizDto quizDto)
@@ -119,6 +116,16 @@ namespace Quiz.Controllers
             context.SaveChanges();
 
             return quiz.Entity.Id;
+        }
+
+        private Guid GetUserToken()
+        {
+            if(!Guid.TryParse(accessor.HttpContext.Request.Cookies["token"], out var token))
+            {
+                token = Guid.NewGuid();
+            }
+
+            return token;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿@using Models.Api
 @using Client.State;
 
-@inject QuizManager quizManager
+@inject IQuizManager quizManager
 @inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
 
 @if (quizManager.Quizes == null)

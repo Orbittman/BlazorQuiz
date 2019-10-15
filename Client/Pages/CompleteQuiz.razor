@@ -1,6 +1,6 @@
-﻿@page "/completeQuiz/{QuizId:int}"
+﻿@page "/completeQuiz/{Id:int}"
 
-@inject QuizManager quizManager
+@inject IQuizManager quizManager
 @inject Client.IApiClient client
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 
@@ -36,7 +36,8 @@ else
                                         <ListGroupItem>
                                             <CheckEdit CheckedChanged="() => Chosen(answer, option)"
                                                        Checked="@(answer.Option?.Id == option.Id)"
-                                                       RadioGroup="@answer.Question.Id.ToString()">
+                                                       RadioGroup="@answer.Question.Id.ToString()"
+                                                       IsDisabled="response.Completed">
                                                 @option.Text
                                             </CheckEdit>
                                         </ListGroupItem>
@@ -47,7 +48,7 @@ else
                     </Card>
                 }
             </ListGroup>
-            <Button IsDisabled="!completed && response.Answers.Any(a => a.Option == null)"
+            <Button IsDisabled="response.Completed || response.Answers.Any(a => a.Option == null)"
                     IsLoading="saving"
                     Type="ButtonType.Submit"
                     Color="Color.Secondary">
@@ -61,18 +62,16 @@ else
     public QuizResponseDto response;
 
     [Parameter]
-    public int QuizId { get; set; }
+    public int Id { get; set; }
     bool saving = false;
     bool completed = false;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        response = new QuizResponseDto(null);
-        quizManager.OnChange += () =>
-        {
-            var quiz = quizManager.Quizes.SingleOrDefault(q => q.Id == QuizId) ?? throw new Exception($"The quiz id {QuizId} wasn't found");
-            response = new QuizResponseDto(quiz);
-        };
+        var quiz = await quizManager.GetQuiz(Id);
+        var quizResponse = await client.GetResponse(Id);
+
+        response = quizResponse ?? new QuizResponseDto(quiz);
     }
 
     private void Chosen(AnswerDto answer, OptionDto option)
@@ -85,6 +84,6 @@ else
         saving = true;
         await client.PutAsync<QuizResponseDto>("api/quiz/responses", response);
         saving = false;
-        completed = true;
+        response.Completed = true;
     }
 }
