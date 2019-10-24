@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MWQuizTests", "MWQuizTests\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csproj", "{60A0C047-C304-4E1C-8F32-0AE57AD3D359}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{71406C2A-EC73-4598-B781-1A5DEF3D50F6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentValidation.Blazor", "FluientValidation.Blazor\FluentValidation.Blazor.csproj", "{D717F937-42BE-4E9A-ABFC-F012C833D574}"
 EndProject
 Global
@@ -37,10 +35,6 @@ Global
 		{60A0C047-C304-4E1C-8F32-0AE57AD3D359}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60A0C047-C304-4E1C-8F32-0AE57AD3D359}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60A0C047-C304-4E1C-8F32-0AE57AD3D359}.Release|Any CPU.Build.0 = Release|Any CPU
-		{71406C2A-EC73-4598-B781-1A5DEF3D50F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{71406C2A-EC73-4598-B781-1A5DEF3D50F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{71406C2A-EC73-4598-B781-1A5DEF3D50F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{71406C2A-EC73-4598-B781-1A5DEF3D50F6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D717F937-42BE-4E9A-ABFC-F012C833D574}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D717F937-42BE-4E9A-ABFC-F012C833D574}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D717F937-42BE-4E9A-ABFC-F012C833D574}.Release|Any CPU.ActiveCfg = Release|Any CPU

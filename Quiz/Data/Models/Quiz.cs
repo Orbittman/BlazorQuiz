@@ -14,5 +14,7 @@
         public DateTime EndTime { get; set; }
 
         public IList<Question> Questions { get; set; }
+
+        public Guid Key { get; set; }
     }
 }
