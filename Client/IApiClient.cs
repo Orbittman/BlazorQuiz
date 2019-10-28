@@ -8,7 +8,7 @@ namespace Client
     {
         Task<TResponse> GetAsync<TResponse>(string path);
 
-        Task<bool> PutAsync<TRequest>(string path, TRequest model);
+        Task<TRequest> PutAsync<TRequest>(string path, TRequest model);
 
         Task<bool> PostAsync<TRequest>(string path, TRequest model);
 

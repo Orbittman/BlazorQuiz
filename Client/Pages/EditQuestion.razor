@@ -25,7 +25,7 @@
                         <InputText @bind-Value="@option.Text" class="form-control" placeholder="Option text" />
                     </Addon>
                     <Addon AddonType="AddonType.End">
-                        <CheckEdit RadioGroup="@Question.Key.ToString()" @bind-Checked="@option.Answer">Answer</CheckEdit>
+                        <CheckEdit RadioGroup="@Question.Key.ToString()" Checked="@option.Answer" CheckedChanged="() => CheckAnswer(option)">Answer</CheckEdit>
                     </Addon>
                     <Addon AddonType="AddonType.End">
                         <Button Clicked="() => RemoveOption(option)" Color="Color.Danger"><Icon Name="IconName.Delete" /></Button>
@@ -44,6 +44,16 @@
 
     [Parameter]
     public Action<QuestionDto> RemoveQuestion { get; set; }
+
+    void CheckAnswer(OptionDto option)
+    {
+        foreach(var currentOption in Question.Options)
+        {
+            currentOption.Answer = false;
+        }
+
+        option.Answer = true;
+    }
 
     void AddOption()
     {

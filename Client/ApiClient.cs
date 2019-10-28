@@ -37,17 +37,19 @@ namespace Client
             return response;
         }
 
-        public async Task<bool> PutAsync<TRequest>(string path, TRequest model)
+        public async Task<TRequest> PutAsync<TRequest>(string path, TRequest model)
         {
             using (var client = GetClient())
             {
                 using (var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json"))
                 {
                     var result = await client.PutAsync(path, content);
+                    var stringResponse = await result.Content.ReadAsStringAsync();
+                    var response = JsonConvert.DeserializeObject<TRequest>(stringResponse);
+
+                    return response;
                 }
             }
-
-            return true;
         }
 
         public async Task<bool> PostAsync<TRequest>(string path, TRequest model)

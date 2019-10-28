@@ -53,7 +53,7 @@ namespace Infrastructure
 
         private static void ValidateModel(EditContext editContext, ValidationMessageStore messages, IValidationFactory validationFactory)
         {
-            Console.WriteLine($"{editContext.Model.GetType().Name} : any model validation");
+            Console.WriteLine($"ValidateModel {editContext.Model.GetType().Name}");
             var validator = validationFactory.GetValidator(editContext.Model);
             var validationResult = validator.Validate(editContext.Model);
 
@@ -61,6 +61,7 @@ namespace Infrastructure
             foreach (var error in validationResult.Errors)
             {
                 messages.Add(editContext.Field(error.PropertyName), error.ErrorMessage);
+                Console.WriteLine($"Error message: {error.ErrorMessage}: {error.PropertyName}: {error.ResourceName}");
             }
 
             editContext.NotifyValidationStateChanged();

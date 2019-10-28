@@ -34,7 +34,9 @@ else
             </Card>
         }
 
+        <ValidationMessage For="@(() => Quiz)" />
         <ValidationMessage For="@(() => Quiz.Questions)" />
+        <ValidationSummary />
         <Button Clicked="@AddQuestion" Color="Color.Primary"><Icon Name="IconName.New" />Add question</Button>
         <Button Type="ButtonType.Submit" Color="Color.Secondary">Save</Button>
     </EditForm>
@@ -60,24 +62,26 @@ else
         base.StateHasChanged();
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
+        saved = false;
         Quiz = await quizManager.GetQuiz(Id) ?? new QuizDto();
     }
 
-    private void HandleSubmit()
+    private async void HandleSubmit()
     {
         if (Quiz.Id == 0)
         {
-            client.PutAsync<QuizDto>("api/quiz", Quiz);
+            Quiz = await client.PutAsync<QuizDto>("api/quiz", Quiz);
             quizManager.Quizes.Add(Quiz);
         }
         else
         {
-            client.PostAsync<QuizDto>("api/quiz", Quiz);
+            await client.PostAsync<QuizDto>("api/quiz", Quiz);
         }
 
         saved = true;
-        JsRuntime.InvokeAsync<bool>("scrollIntoView", "alert");
+        StateHasChanged();
+        await JsRuntime.InvokeAsync<bool>("scrollIntoView", "alert");
     }
 }

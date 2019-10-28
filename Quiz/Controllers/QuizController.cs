@@ -89,7 +89,9 @@ namespace Quiz.Controllers
         {
             var quiz = mapper.Map<Quiz>(quizDto);
             context.Quizes.Add(quiz);
-            context.SaveChanges();
+            var newId = context.SaveChanges();
+
+            quizDto.Id = newId;
 
             return quizDto;
         }
